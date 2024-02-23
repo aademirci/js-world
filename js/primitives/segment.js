@@ -4,6 +4,11 @@ class Segment {
         this.p2 = p2
     }
 
+    static break(seg, point) {
+        const segs = [new Segment(seg.p1, point), new Segment(point, seg.p2)]
+        return segs
+    }
+
     length() {
         return distance(this.p1, this.p2)
     }

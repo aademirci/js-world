@@ -39,6 +39,7 @@ class GraphEditor {
             }
         }
         if (e.button == 0) { // left click
+            let onSegment = false
             if (this.viewport.keyDown) {
                 return
             }
@@ -48,13 +49,16 @@ class GraphEditor {
                 return
             }
             this.graph.addPoint(this.mouse)
-            this.#select(this.mouse)
+            if (this.selected) {
+                onSegment = this.graph.onSegment(this.selected, this.mouse) 
+            }
+            this.#select(this.mouse, onSegment)
             this.hovered = this.mouse
         }
     }
 
-    #select(point) {
-        if (this.selected) {
+    #select(point, onSegment) {
+        if (this.selected && !onSegment) {
             this.graph.tryAddSegment(new Segment(this.selected, point))
         }
         this.selected = point

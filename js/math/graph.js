@@ -45,6 +45,23 @@ class Graph {
         this.segments.push(seg)
     }
 
+    onSegment(p1, p2) {
+        const newSeg = new Segment(p1, p2)
+
+        for (const seg of this.segments) {
+            const int = getIntersection(seg.p1, seg.p2, p1, p2)
+            if (int && int.offset != 1 && int.offset != 0) {
+                const point = new Point(int.x, int.y)
+                this.tryAddPoint(point)
+                const broke1 = Segment.break(seg, point)
+                const broke2 = Segment.break(newSeg, point)
+                this.segments.push(...broke1, ...broke2)
+                this.removeSegment(seg)
+                return true
+            }
+        }        
+    }
+
     containsSegment(seg) {
         return this.segments.find(s => s.equals(seg))
     }
