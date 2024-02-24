@@ -10,6 +10,7 @@ class GraphEditor {
         this.hovered = null
         this.dragging = false
         this.mouse = null
+        this.segments = []
 
         this.#addEventListeners()
     }
@@ -18,7 +19,7 @@ class GraphEditor {
         this.canvas.addEventListener('mousedown', this.#handleMouseDown.bind(this))
         this.canvas.addEventListener('mousemove', this.#handleMouseMove.bind(this))
         this.canvas.addEventListener('contextmenu', e => e.preventDefault())
-        this.canvas.addEventListener('mouseup', () => this.dragging = false)
+        this.canvas.addEventListener('mouseup', this.#handleMouseUp.bind(this))
     }
 
     #handleMouseMove(e) {
@@ -27,6 +28,7 @@ class GraphEditor {
         if (this.dragging == true) {
             this.selected.x = this.mouse.x
             this.selected.y = this.mouse.y
+            this.segments = this.graph.getSegmentsWithPoint(this.selected) 
         }
     }
 
@@ -54,6 +56,17 @@ class GraphEditor {
             }
             this.#select(this.mouse, onSegment)
             this.hovered = this.mouse
+        }
+    }
+
+    #handleMouseUp(e) {
+        if (e.button == 0) { 
+            this.dragging = false
+            if (this.segments.length == 1) {
+                if (this.graph.onSegment(this.segments[0].p1, this.selected)) {
+                    this.graph.removeSegment(this.segments[0])
+                }
+            }
         }
     }
 
